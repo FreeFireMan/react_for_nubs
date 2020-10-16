@@ -9,25 +9,25 @@ const CurrentUserChecker = ({children}) => {
     const [token] = useLocalStorage('token');
 
 
-    // useEffect(() =>{
-    //     if(!token){
-    //         dispatch({type: 'SET_UNAUTHORIZED'})
-    //         return
-    //     }
-    //     doFetch()
-    //     dispatch({type: 'LOADING'})
-    // },[token, dispatch, doFetch])
-    //
-    // useEffect(()=>{
-    //     if(!response){
-    //         return
-    //     }
-    //
-    //     dispatch({
-    //         type: 'SET_AUTHORIZED',
-    //         payload: response.user
-    //     })
-    // },[response,dispatch])
+    useEffect(() =>{
+        if(!token){
+            dispatch({type: 'SET_UNAUTHORIZED'})
+            return
+        }
+        doFetch()
+        dispatch({type: 'LOADING'})
+    },[token, dispatch, doFetch])
+
+    useEffect(()=>{
+        if(!response){
+            return
+        }
+
+        dispatch({
+            type: 'SET_AUTHORIZED',
+            payload: response
+        })
+    },[response,dispatch])
 
     return children
 }

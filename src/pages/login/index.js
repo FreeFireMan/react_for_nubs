@@ -5,31 +5,26 @@ import {CurrentUserContext} from "../../contexts/currentUser";
 import {Link, Redirect} from "react-router-dom";
 import BackendErrorMessage from "../../components/backendErrorMessage";
 
-const Authentication = (props) => {
-    console.log('props',props);
-    const isLogin = props.match.path === '/login'
-    const pageTitle = isLogin ? 'Sing In' : 'Sing Up'
-    const descriptionLink = isLogin ? '/register' : '/login'
-    const descriptionText = isLogin ? 'Need an account?' : 'Have an account?'
-    const apiUrl = !isLogin ? '/signup' : '/token/'
-    const [email, setEmail] = useState('')
+const Login = (props) => {
+
+    const pageTitle = 'Sing In'
+    const descriptionLink = '/register'
+    const descriptionText = 'Need an account?'
+    const apiUrl = '/token/'
+
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [{isLoading, response,error},doFetch] = useFetch(apiUrl)
     const [,setToken] = useLocalStorage('token')
     const [currentUser,dispatch] = useContext(CurrentUserContext)
     const [isSuccessfullSubmit, setIsSuccessfullSubmit] = useState(false)
-    const [isSuccessfullSubmitRegister, setIsSuccessfullSubmitRegister] = useState(false)
-    // if(isLogin){
-    //     setIsSuccessfullSubmitRegister(false)
-    // }
+
 
 
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const user = isLogin ? {username, password} : {email, password, username, profile: {phone: "+380978065905"}}
-        const body = JSON.stringify(user)
+        const body = JSON.stringify({username, password})
         console.log('user');
         console.log(body);
         doFetch({
@@ -43,10 +38,7 @@ const Authentication = (props) => {
         if(!response){
             return;
         }
-        if(response.hasOwnProperty('username')){
-            console.log('response username');
-            setIsSuccessfullSubmitRegister(true)
-        }
+
         if(response.hasOwnProperty('access')){
             console.log('response access');
             setIsSuccessfullSubmit(true)
@@ -55,11 +47,6 @@ const Authentication = (props) => {
     },[response,setToken])
 
 
-
-
-    if(isSuccessfullSubmitRegister){
-        return <Redirect to={'/login'}/>
-    }
     if(isSuccessfullSubmit){
         return <Redirect to={'/'}/>
     }
@@ -76,20 +63,6 @@ const Authentication = (props) => {
                         <form onSubmit={handleSubmit}>
                             {error && <BackendErrorMessage backendError={error} />}
                             <fieldset>
-                                {!isLogin && (
-                                    <fieldset className="form-group">
-                                        <input
-                                            name='email'
-                                            type='email'
-                                            className="form-control form-control-lg"
-                                            placeholder="Email"
-                                            value={email}
-                                            onChange={e => setEmail(e.target.value)}
-
-                                        />
-                                    </fieldset>
-
-                                )}
                                 <fieldset className="form-group">
                                     <input
 
@@ -128,4 +101,4 @@ const Authentication = (props) => {
         </div>
     )
 }
-export default Authentication
+export default Login

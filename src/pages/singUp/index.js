@@ -1,37 +1,31 @@
-import React, {useContext, useEffect, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import useFetch from "../../hooks/useFetch";
-import useLocalStorage from "../../hooks/useLocalStorage";
-import {CurrentUserContext} from "../../contexts/currentUser";
+
 import {Link, Redirect} from "react-router-dom";
 import BackendErrorMessage from "../../components/backendErrorMessage";
 
 const SingUp = (props) => {
-    console.log('props',props);
-    const isLogin = props.match.path === '/login'
-    const pageTitle = isLogin ? 'Sing In' : 'Sing Up'
-    const descriptionLink = isLogin ? '/register' : '/login'
-    const descriptionText = isLogin ? 'Need an account?' : 'Have an account?'
-    const apiUrl = !isLogin ? '/signup' : '/token/'
+    console.log('SingUp');
+
+    const pageTitle = 'Sing Up'
+    const descriptionLink = '/login'
+    const descriptionText = 'Have an account?'
+    const apiUrl =  '/signup'
     const [email, setEmail] = useState('')
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
+    const [phone, setPhone] = useState('+380978065905')
     const [{isLoading, response,error},doFetch] = useFetch(apiUrl)
-    const [,setToken] = useLocalStorage('token')
-    const [currentUser,dispatch] = useContext(CurrentUserContext)
     const [isSuccessfullSubmit, setIsSuccessfullSubmit] = useState(false)
-    const [isSuccessfullSubmitRegister, setIsSuccessfullSubmitRegister] = useState(false)
-    // if(isLogin){
-    //     setIsSuccessfullSubmitRegister(false)
-    // }
+
 
 
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const user = isLogin ? {username, password} : {email, password, username, profile: {phone: "+380978065905"}}
-        const body = JSON.stringify(user)
-        console.log('user');
-        console.log(body);
+        const body = JSON.stringify(
+            {email, password, username, profile: {phone}}
+            )
         doFetch({
             method: 'post',
             body
@@ -44,24 +38,14 @@ const SingUp = (props) => {
             return;
         }
         if(response.hasOwnProperty('username')){
-            console.log('response username');
-            setIsSuccessfullSubmitRegister(true)
-        }
-        if(response.hasOwnProperty('access')){
-            console.log('response access');
             setIsSuccessfullSubmit(true)
-            setToken(JSON.stringify(response))
         }
-    },[response,setToken])
+
+    },[response,])
 
 
-
-
-    if(isSuccessfullSubmitRegister){
-        return <Redirect to={'/login'}/>
-    }
     if(isSuccessfullSubmit){
-        return <Redirect to={'/'}/>
+        return <Redirect to={'/login'}/>
     }
 
     return (
@@ -76,7 +60,6 @@ const SingUp = (props) => {
                         <form onSubmit={handleSubmit}>
                             {error && <BackendErrorMessage backendError={error} />}
                             <fieldset>
-                                {!isLogin && (
                                     <fieldset className="form-group">
                                         <input
                                             name='email'
@@ -88,8 +71,6 @@ const SingUp = (props) => {
 
                                         />
                                     </fieldset>
-
-                                )}
                                 <fieldset className="form-group">
                                     <input
 
@@ -98,6 +79,18 @@ const SingUp = (props) => {
                                         placeholder="Username"
                                         value={username}
                                         onChange={e => setUsername(e.target.value)}
+
+                                    />
+                                </fieldset>
+                                <fieldset className="form-group">
+                                    <input
+
+                                        type='tel'
+
+                                        className="form-control form-control-lg"
+                                        placeholder="Username"
+                                        value={phone}
+                                        onChange={e => setPhone(e.target.value)}
 
                                     />
                                 </fieldset>

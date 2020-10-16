@@ -1,6 +1,6 @@
 import {useEffect, useState, useCallback} from "react";
 
-// import useLocalStorage from "./useLocalStorage";
+import useLocalStorage from "./useLocalStorage";
 
 export default (url) => {
     const baseUrl = 'http://127.0.0.1:8000'
@@ -8,7 +8,7 @@ export default (url) => {
     const [response, setResponse] = useState(null)
     const [error, setError] = useState(null)
     const [options, setOptions] = useState({})
-    // const [token] = useLocalStorage('token')
+    const [token] = useLocalStorage('token')
 
 
     const doFetch = useCallback((options = {}) => {
@@ -18,16 +18,19 @@ export default (url) => {
 
 
     useEffect(() => {
+        const tok_obj = token && JSON.parse(token)
+        const Authorization = tok_obj.access ? `Bearer ${tok_obj.access}` : ''
         const requestOptions = {
             ...options,
             ...{
                 mode: 'cors',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    Authorization
                 }
             }
         }
-        // console.log('requestOptions',requestOptions);
+         console.log('requestOptions',requestOptions);
 
         if (!isLoading) {
             return
@@ -57,7 +60,7 @@ export default (url) => {
                 setError(response)
             })
 
-    },[isLoading,url,options])
+    },[isLoading,url,options,token])
 
     return [{isLoading, response, error}, doFetch]
 }
