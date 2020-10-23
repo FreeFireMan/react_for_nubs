@@ -6,6 +6,8 @@ const BackendErrorMessage = ({backendError}) =>{
     console.log(backendError);
 
     const errorMessages = Object.keys(backendError).map(value => {
+        console.log('value');
+        console.log(value);
         const message = backendError[value].join(' ')
         return `${value} ${message}`
     })
