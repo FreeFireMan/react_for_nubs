@@ -28,7 +28,7 @@ export default (url) => {
                 mode: 'cors',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization
+                     Authorization
                 }
             }
         }
@@ -47,12 +47,7 @@ export default (url) => {
                     console.log("response.status",response.status);
                     if(response.status === 401){
                         const refreshRequest = {
-                            method: 'POST',
-                            // mode: 'cors',
-                            headers: {
-                                'Content-Type': 'application/json',
-
-                            },
+                           ...requestOptions,
                             body:{
                                  "refresh" : `"refresh":${tok_obj.refresh}`,
                             }
@@ -62,13 +57,12 @@ export default (url) => {
                         console.log(refreshRequest);
                         fetch(baseUrl + '/token/refresh/', refreshRequest)
                             .then( response =>{
-                                console.log(response);
-                                console.log('response');
+                                console.log('refreshRequest response',response);
                                 return response.json()
                             })
                             .then( response =>{
-                                console.log(response);
-                                console.log('response');
+                                console.log('refreshRequest response 2',response);
+
                                 if(response.hasOwnProperty('access')){
                                     tok_obj.access = response.access
                                     setToken(JSON.stringify(tok_obj))
