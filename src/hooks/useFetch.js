@@ -46,11 +46,15 @@ export default (url) => {
                 else{
                     console.log("response.status",response.status);
                     if(response.status === 401){
+                        setIsLoading(true)
+                        const body = JSON.stringify({ refresh : tok_obj.refresh })
                         const refreshRequest = {
-                           ...requestOptions,
-                            body:{
-                                 "refresh" : `"refresh":${tok_obj.refresh}`,
-                            }
+                            method: "POST",
+                            mode: 'cors',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body
 
                         }
                         console.log("refreshRequest");
@@ -67,10 +71,12 @@ export default (url) => {
                                     tok_obj.access = response.access
                                     setToken(JSON.stringify(tok_obj))
                                 }
+                                setIsLoading(false)
                             })
                             .catch(error =>{
                                 console.log('ERROR', error);
                                 setError(error)
+                                setIsLoading(false)
                             })
                     }
 

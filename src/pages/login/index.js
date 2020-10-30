@@ -20,9 +20,8 @@ const Login = (props) => {
     const [isSuccessfullSubmit, setIsSuccessfullSubmit] = useState(false)
 
 
-
-
     const handleSubmit = (e) => {
+
         e.preventDefault();
         const body = JSON.stringify({username, password})
         console.log('user');
